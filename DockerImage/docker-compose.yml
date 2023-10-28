@@ -1,36 +1,37 @@
-...
+version: '3'
+services:
   runalyze:
-    image: ${REGISTRY}/runalyze:${TAG_runalyze}
-    build:
-      context: ./runalyze
-      args:
-      - CONF_REGISTRY=${REGISTRY}
-      - CONF_TAG=${TAG_runalyze_base:?err}
+    image: runalyze:latest
+    ports:
+      - "80:80"
+      - "443:443"
     environment:
-      ENV_RUNALYZE_DB_NAME: "${RUNALYZE_DB_NAME}"
-      ENV_RUNALYZE_DB_USER: "${RUNALYZE_DB_USER}"
-      ENV_RUNALYZE_DB_PW: "${RUNALYZE_DB_PW}"
-      ENV_RUNALYZE_SECRET: "${RUNALYZE_SECRET}"
-      ENV_HTTP_PROXY: "${HTTP_PROXY}"
-      ENV_WEATHER_OPENWMAP_KEY: "${WEATHER_OPENWMAP_KEY}"
-      ENV_WEATHER_METEOSTAT_KEY: "${WEATHER_METEOSTAT_KEY}"
-      ENV_MAIL_HOST: "${MAIL_HOST}"
-      ENV_MAIL_PORT: "${MAIL_PORT}"
-      ENV_MAIL_USER: "${MAIL_USER}"
-      ENV_MAIL_USER_PW: "${MAIL_USER_PW}"
-      ENV_MAIL_LOCALNAME: "'${HOST_NAME}'"
+      - DATABASE_HOST=db
+      - DATABASE_NAME=runalyze
+      - DATABASE_USER=runner
+      - DATABASE_PASSWORD=CHANGE_ME
+      - SECRET=CHANGE_ME
+      - USER_DISABLE_ACCOUNT_ACTIVATION=true
     volumes:
-    - ${VOL_MAIL_MSMTPRC}:/etc/msmtprc:ro
-    - ${VOL_MAIL_ALIASES}:/etc/aliases:ro
-    - ${VOL_CERT_PUB_DIR}/${CERT_NAME}.crt:/etc/nginx/ssl/certificate.crt:ro
-    - ${VOL_CERT_PRI_DIR}/${CERT_NAME}.key:/etc/nginx/ssl/certificate_priv.key:ro
+    #- ${VOL_MAIL_MSMTPRC}:/etc/msmtprc:ro
+    #- ${VOL_MAIL_ALIASES}:/etc/aliases:ro
+    #- ${VOL_CERT_PUB_DIR}/${CERT_NAME}.crt:/etc/nginx/ssl/public.crt:ro
+    #- ${VOL_CERT_PRI_DIR}/${CERT_NAME}.key:/etc/nginx/ssl/private.key:ro
     - ${VOL_LOG_ROOT}/runalyze:/var/log/runalyze
-    - ${VOL_LOG_ROOT}/runalyze:/var/log/nginx
-    # hoehendaten and imports
-    - ${VOL_RUNALYZE_DATA_ROOT}/srtm/tif:/app/runalyze/data/srtm:ro
-    - ${VOL_RUNALYZE_DATA_ROOT}/activityimport:/app/runalyze_import
+    #- ${VOL_LOG_ROOT}/runalyze:/var/log/nginx
+  
+    - /YOUR/PATH/TO/srtm/:/app/runalyze/data/srtm:ro
+    - /YOUR/PATH/TO/activityimport:/app/runalyze_import
     depends_on:
-    - mysql
-    network_mode: "${NETWORK_MODE}"
-    logging: *default-logging
-...
+    - db
+  db:
+    image: mariadb:11.1.2-jammy
+    environment:
+      MYSQL_ROOT_PASSWORD: CHANGE_ME
+      MYSQL_DATABASE: runalyze
+      MYSQL_USER: runner
+      MYSQL_PASSWORD: CHANGE_ME
+    #ports:
+    #  - "3306:3306"
+    volumes:
+      - /YOUR/PATH/TO/db:/var/lib/mysql

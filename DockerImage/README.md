@@ -4,24 +4,92 @@ Docker samples/templates for self-hosted RUNALYZE.
 
 On the [RUNALYZE docs](https://github.com/Runalyze/docs) and [RUNALYZE admin-docs](https://github.com/Runalyze/admin-docs) you can find documents for installing RUNALYZE 4.
 
-But it tooks a few day for me to get RUNALYZE self-hosted running with all parts (i mean bulk-imports, queue-processing/poster-generation, user registration and so on).
+This Fork is provided AS-IS.  The upstream repo provided help, but left a lot of things out needed to get working.  This is working in my environment, but I am not a Docker/devops guru so chatGPT helped write a lot of  the things missing in the image. I'm sure some of it could be done way better :)
 
-I hope the samples/extracts of my Dockerfiles and docker-compose helps you to speed up this initial phase ;-)
 
-Some facts:
-* I used a self build docker-image-base based on Debian Bullseye/ARM64 minbase-variant.
-* I used [RUNIT](http://smarden.org/runit/) for the container init system (you can use any other system but must perhaps change the commands below)
-* I running MariaDB/mysql in an own container. 
-* PHP + RUNALYZE + nginx running in the app-container with this `Dockerfile`.
-* Administration of the containers is done with docker-compose (see `docker-compose.yml`).
-* The mail configuration files, the logfiles and the TLS certificates are used from the host.
-* Also the folder for bulk-import of activities and the high-data (SRTM) is also on the host.
-* PHP and nginx running with user `dockusr`.
 
-Commands for the docker container:
-* nginx: `exec /usr/sbin/nginx -g "daemon off;"`
-* PHP: `exec /usr/sbin/php-fpm --nodaemonize`
-* Queue: `exec chpst -u dockusr /usr/bin/php /app/runalyze/bin/console runalyze:queue:consume --env=prod --no-debug --stop-when-empty`
+## Build
 
-Other commands:
-* bulk-import: `chpst -u dockusr /usr/bin/php /app/runalyze/bin/console runalyze:activity:bulk-import --env=prod <user> /app/runalyze_import [--sport=cycling|swimming|hiking|mountaineering] [--move=imported-folder]`
+
+```
+git clone https://github.com/chasx003/Runalyze-Tools.git
+cd ./Runalyze-Tools/DockerImage
+docker build . -t runalyze:latest
+ ```
+
+ (I think this should work, but I haven't tested it. I'm using CI/CD to build, but this should get you almost there)
+
+
+## Install
+
+
+I've modified the original docker-compose example, I believe it should work, but have not tested it.
+
+After editing the compose for your environment,
+
+```
+docker-compose up -d
+``` 
+
+After you succesfully bringing the stack up, navigate to http://<host>/install to complete the app installation
+
+
+
+## Environment Variables
+
+The following ENV variables are avaialbe
+
+| Environment Variable                      | Default                           |
+|----------------------------------------- | ----------------------------------|
+| LOCALE                                    | en                                |
+| DATABASE_HOST                             | 127.0.0.1                         |
+| DATABASE_PREFIX                           | runalyze_                         |
+| DATABASE_PORT                             | 3306                              |
+| DATABASE_NAME                             | runalyze                          |
+| DATABASE_PASSWORD                         | test                              |
+| DATABASE_USER                             | runalyze_test                     |
+| SECRET                                   | please_change_this_secret          |
+| UPDATE_DISABLED                           | no                               |
+| USER_CAN_REGISTER                         | true                             |
+| USER_DISABLE_ACCOUNT_ACTIVATION           | false                            |
+| MAINTENANCE                               | false                            |
+| GARMIN_API_KEY                            |                                  |
+| WEATHER_PROXY                             |                                  |
+| OPENWEATHERMAP_API_KEY                    |                                  |
+| METEOSTATNET_API_KEY                      |                                  |
+| DARKSKY_API_KEY                           |                                  |
+| NOKIA_HERE_APPID                          |                                  |
+| NOKIA_HERE_TOKEN                          |                                  |
+| THUNDERFOREST_API_KEY                     |                                  |
+| MAPBOX_API_KEY                            |                                  |
+| GEONAMES_USERNAME                         |                                  |
+| PERL_PATH                                | /usr/bin/perl                     |
+| PYTHON3_PATH                              | /usr/bin/python3                   |
+| RSVG_PATH                                | /usr/bin/rsvg-convert              |
+| INKSCAPE_PATH                             | /usr/bin/inkscape                  |
+| TTBIN_PATH                               | ../call/perl/ttbincnv             |
+| SQLITE_MOD_SPATIALITE                    | libspatialite.so.5                |
+| MAIL_SENDER                              |                                  |
+| MAIL_NAME                                |                                  |
+| SMTP_HOST                                | localhost                         |
+| SMTP_PORT                                | 25                               |
+| SMTP_SECURITY                            |                                  |
+| SMTP_USERNAME                            |                                  |
+| SMTP_PASSWORD                            |                                  |
+| MAIL_LOCALDOMAIN                         |                                  |
+| BACKUP_STORAGE_PERIOD                     | 5                                |
+| POSTER_STORAGE_PERIOD                     | 5                                |
+| ROUTER_REQUEST_CONTEXT_HOST               | localhost                         |
+| ROUTER_REQUEST_CONTEXT_SCHEME             | http                             |
+| ROUTER_REQUEST_CONTEXT_BASE_URL           |                                  |
+| OSM_OVERPASS_URL                         |                                  |
+| OSM_OVERPASS_PROXY                       |                                  |
+
+
+## Issues
+
+* Reverse Proxy
+For some reason I could not get this to cooperate when running behind a reverse proxy that was terminating TLS. So the container listens on both 80/443 and has a self signed cert for 443.  When doing this, I was succesfully able to enable TLS.
+
+* Email 
+I wasn't able to get email working but also don't plan on using it. I'm not sure if it was config issues on my end, or if the container is missing some dependencies. To get around this I would recommend having USER_DISABLE_ACCOUNT_ACTIVATION set to false, as you cannot login without activating your account. 
