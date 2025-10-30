@@ -136,7 +136,7 @@ COPY --chown=$CONF_USER:$CONF_USER --chmod="600" config/config.yml $CONF_APP_ROO
 
 # Fix the stray AFTER keyword in structure.sql
 RUN if [ -f /app/runalyze/inc/install/structure.sql ]; then \
-      sed -i 's/AFTER,/,/' /app/runalyze/inc/install/structure.sql; \
+      sed -i "s/\`with_target\` TINYINT(1) UNSIGNED DEFAULT '0' AFTER,/\`with_goal\` TINYINT(1) UNSIGNED DEFAULT '0',/" /app/runalyze/inc/install/structure.sql; \
     fi
 
 # Set the entry point to the entrypoint script
