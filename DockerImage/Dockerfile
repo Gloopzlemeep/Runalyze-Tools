@@ -134,7 +134,10 @@ RUN echo "Downloading & extract..." \
 USER root
 COPY --chown=$CONF_USER:$CONF_USER --chmod="600" config/config.yml $CONF_APP_ROOT/data/config.yml
 
-
+# Fix the stray AFTER keyword in structure.sql
+RUN if [ -f /app/runalyze/inc/install/structure.sql ]; then \
+      sed -i 's/AFTER,/,/' /app/runalyze/inc/install/structure.sql; \
+    fi
 
 # Set the entry point to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
