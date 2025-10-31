@@ -139,6 +139,10 @@ RUN if [ -f /app/runalyze/inc/install/structure.sql ]; then \
       sed -i "s/\`with_target\` TINYINT(1) UNSIGNED DEFAULT '0' AFTER,/\`with_goal\` TINYINT(1) UNSIGNED DEFAULT '0',/" /app/runalyze/inc/install/structure.sql; \
     fi
 
+# Provide mod_spatialite to php for timezone detection
+RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/cli/php.ini \
+ && sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/fpm/php.ini
+
 # Set the entry point to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
 
