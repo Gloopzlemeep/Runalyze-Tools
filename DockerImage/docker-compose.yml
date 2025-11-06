@@ -2,24 +2,16 @@ services:
   runalyze:
     image: myrunalyze:latest
     ports:
-      - "8081:80"
+      - "8080:80"
     #  - "443:443"
+    env_file:
+      - .env
     environment:
-      - DATABASE_HOST=db
-      - DATABASE_NAME="${RUNALYZE_DB_NAME}"
-      - DATABASE_USER="${RUNALYZE_DB_USER}"
-      - DATABASE_PASSWORD="${RUNALYZE_DB_PW}"
-      - SECRET="${RUNALYZE_SECRET}"
-      - USER_DISABLE_ACCOUNT_ACTIVATION="${DISABLE_EMAIL_VERIFICATION}"
-      - TZ="${TIMEZONE}"
-      - OPENWEATHER_API_KEY="${OPENWEATHER_KEY}"
-      - METEOSTATNET_API_KEY="${WEATHER_METEOSTAT_KEY}"
-      #- MAIL_HOST="${MAIL_HOST}"
-      #- MAIL_PORT="${MAIL_PORT}"
-      #- MAIL_USER="${MAIL_USER}"
-      #- MAIL_USER_PW="${MAIL_USER_PW}"
-      #- MAIL_LOCALNAME="'${HOST_NAME}'"
-
+      DATABASE_HOST: db
+      DATABASE_NAME: ${RUNALYZE_DB_NAME}
+      DATABASE_USER: ${RUNALYZE_DB_USER}
+      DATABASE_PASSWORD: ${RUNALYZE_DB_PW}
+      SECRET: ${RUNALYZE_SECRET}
     volumes:
     #- ${VOL_MAIL_MSMTPRC}:/etc/msmtprc:ro
     #- ${VOL_MAIL_ALIASES}:/etc/aliases:ro
@@ -34,10 +26,10 @@ services:
   db:
     image: mariadb:11.1.2-jammy
     environment:
-      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PW}"
-      - MYSQL_DATABASE="${RUNALYZE_DB_NAME}"
-      - MYSQL_USER="${RUNALYZE_DB_USER}"
-      - MYSQL_PASSWORD="${RUNALYZE_DB_PW}"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PW}
+      MYSQL_DATABASE: ${RUNALYZE_DB_NAME}
+      MYSQL_USER: ${RUNALYZE_DB_USER}
+      MYSQL_PASSWORD: ${RUNALYZE_DB_PW}
     #ports:
     #  - "3306:3306"
     volumes:
