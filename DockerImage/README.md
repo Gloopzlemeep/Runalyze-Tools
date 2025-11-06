@@ -14,9 +14,9 @@ This Fork is provided AS-IS.  The upstream repo provided help, but left a lot of
 ```
 mkdir runalyze-app
 cd runalyze-app
-git clone https://github.com/Gloopzlemeep/Runalyze-Tools.git
-mv Runalyze-Tools/docker-compose.yml docker-compose.yml
-mv Runalyze-Tools/.env.example .env
+git clone -b master https://github.com/Gloopzlemeep/Runalyze-Tools.git
+cp Runalyze-Tools/DockerImage/docker-compose.yml docker-compose.yml
+cp Runalyze-Tools/DockerImage/.env.example .env
 docker build Runalyze-Tools/DockerImage/. -t myrunalyze:latest
  ```
 
