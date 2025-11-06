@@ -1,37 +1,38 @@
-version: '3'
 services:
   runalyze:
-    image: runalyze:latest
+    image: myrunalyze:latest
     ports:
-      - "80:80"
-      - "443:443"
+      - "8081:80"
+    #  - "443:443"
     environment:
       - DATABASE_HOST=db
-      - DATABASE_NAME=runalyze
-      - DATABASE_USER=runner
-      - DATABASE_PASSWORD=CHANGE_ME
-      - SECRET=CHANGE_ME
-      - USER_DISABLE_ACCOUNT_ACTIVATION=true
+      - DATABASE_NAME="${RUNALYZE_DB_NAME}"
+      - DATABASE_USER="${RUNALYZE_DB_USER}"
+      - DATABASE_PASSWORD="${RUNALYZE_DB_PW}"
+      - SECRET="${RUNALYZE_SECRET}"
+      - USER_DISABLE_ACCOUNT_ACTIVATION="${DISABLE_EMAIL_VERIFICATION}"
+      - TZ="${TIMEZONE}"
+      - OPENWEATHER_API_KEY="${OPENWEATHER_KEY}"
+      - METEOSTATNET_API_KEY="${WEATHER_METEOSTAT_KEY}"
     volumes:
     #- ${VOL_MAIL_MSMTPRC}:/etc/msmtprc:ro
     #- ${VOL_MAIL_ALIASES}:/etc/aliases:ro
     #- ${VOL_CERT_PUB_DIR}/${CERT_NAME}.crt:/etc/nginx/ssl/public.crt:ro
     #- ${VOL_CERT_PRI_DIR}/${CERT_NAME}.key:/etc/nginx/ssl/private.key:ro
     - ${VOL_LOG_ROOT}/runalyze:/var/log/runalyze
-    #- ${VOL_LOG_ROOT}/runalyze:/var/log/nginx
-  
-    - /YOUR/PATH/TO/srtm/:/app/runalyze/data/srtm:ro
-    - /YOUR/PATH/TO/activityimport:/app/runalyze_import
+    - ${VOL_LOG_ROOT}/nginx:/var/log/nginx
+    - ${VOL_RUNALYZE_DATA_ROOT}/srtm:/app/runalyze/data/srtm
+    - ${VOL_RUNALYZE_DATA_ROOT}/import:/app/runalyze_import
     depends_on:
     - db
   db:
     image: mariadb:11.1.2-jammy
     environment:
-      MYSQL_ROOT_PASSWORD: CHANGE_ME
-      MYSQL_DATABASE: runalyze
-      MYSQL_USER: runner
-      MYSQL_PASSWORD: CHANGE_ME
+      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PW}"
+      - MYSQL_DATABASE="${RUNALYZE_DB_NAME}"
+      - MYSQL_USER="${RUNALYZE_DB_USER}"
+      - MYSQL_PASSWORD="${RUNALYZE_DB_PW}"
     #ports:
     #  - "3306:3306"
     volumes:
-      - /YOUR/PATH/TO/db:/var/lib/mysql
+      - ${VOL_DB_ROOT}:/var/lib/mysql
