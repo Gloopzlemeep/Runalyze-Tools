@@ -14,6 +14,12 @@ services:
       - TZ="${TIMEZONE}"
       - OPENWEATHER_API_KEY="${OPENWEATHER_KEY}"
       - METEOSTATNET_API_KEY="${WEATHER_METEOSTAT_KEY}"
+      #- MAIL_HOST="${MAIL_HOST}"
+      #- MAIL_PORT="${MAIL_PORT}"
+      #- MAIL_USER="${MAIL_USER}"
+      #- MAIL_USER_PW="${MAIL_USER_PW}"
+      #- MAIL_LOCALNAME="'${HOST_NAME}'"
+
     volumes:
     #- ${VOL_MAIL_MSMTPRC}:/etc/msmtprc:ro
     #- ${VOL_MAIL_ALIASES}:/etc/aliases:ro
@@ -22,7 +28,7 @@ services:
     - ${VOL_LOG_ROOT}/runalyze:/var/log/runalyze
     - ${VOL_LOG_ROOT}/nginx:/var/log/nginx
     - ${VOL_RUNALYZE_DATA_ROOT}/srtm:/app/runalyze/data/srtm
-    - ${VOL_RUNALYZE_DATA_ROOT}/import:/app/runalyze_import
+    - ${VOL_RUNALYZE_DATA_ROOT}/activityimport:/app/runalyze_import
     depends_on:
     - db
   db:
