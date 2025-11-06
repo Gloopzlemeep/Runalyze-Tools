@@ -137,9 +137,9 @@ RUN cp $CONF_APP_ROOT/app/config/default_config.yml $CONF_APP_ROOT/data/config.y
 RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/cli/php.ini \
  && sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/fpm/php.ini
 
-# Clear cache causing activity import to fail. Doesn't work needs fixing
-RUN php /app/runalyze/bin/console cache:clear --env=prod && \
-    php /app/runalyze/bin/console cache:warmup --env=prod
+# Clear cache causing activity import to fail. Doesn't work needs fixing. Needs to occur after db is running
+# RUN php /app/runalyze/bin/console cache:clear --env=prod && \
+#    php /app/runalyze/bin/console cache:warmup --env=prod
 
 # Set the entry point to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
