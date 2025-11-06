@@ -134,11 +134,6 @@ RUN echo "Downloading & extract..." \
 USER root
 COPY --chown=$CONF_USER:$CONF_USER --chmod="600" config/config.yml $CONF_APP_ROOT/data/config.yml
 
-# Fix the stray AFTER keyword in structure.sql and rename incorrect column. Awaiting PR to fix
-RUN if [ -f /app/runalyze/inc/install/structure.sql ]; then \
-      sed -i "s/\`with_target\` TINYINT(1) UNSIGNED DEFAULT '0' AFTER,/\`with_goal\` TINYINT(1) UNSIGNED DEFAULT '0',/" /app/runalyze/inc/install/structure.sql; \
-    fi
-
 # Set location of mod_spatialite to enable timezone detection
 RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/cli/php.ini \
  && sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/fpm/php.ini
