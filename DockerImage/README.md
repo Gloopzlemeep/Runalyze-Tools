@@ -12,27 +12,27 @@ This Fork is provided AS-IS.  The upstream repo provided help, but left a lot of
 
 
 ```
-git clone https://github.com/chasx003/Runalyze-Tools.git
-cd ./Runalyze-Tools/DockerImage
-docker build . -t runalyze:latest
+mkdir runalyze-app
+cd runalyze-app
+git clone https://github.com/Gloopzlemeep/Runalyze-Tools.git
+mv Runalyze-Tools/docker-compose.yml docker-compose.yml
+mv Runalyze-Tools/.env.example .env
+docker build Runalyze-Tools/DockerImage/. -t myrunalyze:latest
  ```
-
- (I think this should work, but I haven't tested it. I'm using CI/CD to build, but this should get you almost there)
 
 
 ## Install
 
 
-I've modified the original docker-compose example, I believe it should work, but have not tested it.
+Make edits to docker-compose.yml where required. 
 
-After editing the compose for your environment,
+Most of the configuration should be done through environment variables in .env
 
 ```
 docker-compose up -d
 ``` 
 
 After you succesfully bringing the stack up, navigate to http://<host>/install to complete the app installation
-
 
 
 ## Environment Variables
