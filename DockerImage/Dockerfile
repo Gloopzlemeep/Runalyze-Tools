@@ -104,9 +104,6 @@ RUN phpdismod mysqli \
 # Create a directory for the app
 RUN mkdir -p $CONF_APP_ROOT && chown -R $CONF_USER:$CONF_USER $CONF_APP_ROOT
 
-
-
-
 # Copy the entrypoint script into the image
 COPY config/entrypoint.sh /entrypoint.sh
 
@@ -132,7 +129,9 @@ RUN echo "Downloading & extract..." \
 
 # copy and protect the configuration file
 USER root
-COPY --chown=$CONF_USER:$CONF_USER --chmod="600" $CONF_APP_ROOT/app/config/default_config.yml $CONF_APP_ROOT/data/config.yml
+RUN cp $CONF_APP_ROOT/app/config/default_config.yml $CONF_APP_ROOT/data/config.yml && \
+    chown $CONF_USER:$CONF_USER $CONF_APP_ROOT/data/config.yml && \
+	chmod 600 $CONF_APP_ROOT/data/config.yml
 
 # Set location of mod_spatialite to enable timezone detection
 RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/cli/php.ini \
