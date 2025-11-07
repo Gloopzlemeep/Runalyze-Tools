@@ -17,7 +17,7 @@ cd runalyze-app
 git clone -b master https://github.com/Gloopzlemeep/Runalyze-Tools.git
 cp Runalyze-Tools/DockerImage/docker-compose.yml docker-compose.yml
 cp Runalyze-Tools/DockerImage/.env.example .env
-docker build Runalyze-Tools/DockerImage/. -t myrunalyze:latest
+docker build Runalyze-Tools/DockerImage/. -t runalyze:latest
  ```
 
 
