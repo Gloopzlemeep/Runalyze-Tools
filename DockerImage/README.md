@@ -40,6 +40,14 @@ docker exec runalyze-app-runalyze-1 php /app/runalyze/bin/console cache:clear --
 docker exec runalyze-app-runalyze-1 php /app/runalyze/bin/console cache:warmup --env=prod
 ``` 
 
+## Additional Requirements
+
+Additional steps post installation are listed in the [Runalyze Admin Docs](https://github.com/Runalyze/admin-docs/blob/master/additional-requirements.rst).
+
+Recommended: Add elevation correction by downloading appropriate SRTM file(s) from [dwtkns](http://dwtkns.com/srtm/), then place the *.tif file(s) in VOL_RUNALYZE_DATA_ROOT/srtm
+
+Timezone detection of activity files is already completed by docker.
+
 ## Update
 
 Be carful! Upgrading to a new version may require data migration. See runalyze repo for details
