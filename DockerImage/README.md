@@ -35,6 +35,20 @@ docker-compose up -d
 After you succesfully bringing the stack up, navigate to http://<host>/install to complete the app installation
 
 
+## Update
+
+Be carful! Upgrading to a new version may require data migration. See runalyze repo for details
+
+```
+docker-compose pull && docker-compose up -d
+``` 
+
+To clean up unused images
+
+```
+docker image prune
+``` 
+
 ## Environment Variables
 
 The following ENV variables are avaialbe
