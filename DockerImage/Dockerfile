@@ -125,7 +125,7 @@ USER $CONF_USER
 # download runalyze and extract it (strip the root folder - it contains the branch name)
 RUN echo "Downloading & extract..." \
     && mkdir -p $CONF_APP_ROOT \
-    && curl -L -s https://github.com/codeproducer198/Runalyze/archive/master.zip | bsdtar --strip-components=1 -xf - -C $CONF_APP_ROOT --exclude "./tests"
+    && curl -L -s https://github.com/Gloopzlemeep/Runalyze/archive/refs/heads/dev.zip | bsdtar --strip-components=1 -xf - -C $CONF_APP_ROOT --exclude "./tests"
 
 # copy and protect the configuration file
 USER root
