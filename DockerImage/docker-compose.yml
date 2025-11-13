@@ -1,6 +1,6 @@
 services:
   runalyze:
-    image: myrunalyze:latest
+    image: runalyze:latest
     ports:
       - "8080:80"
     #  - "443:443"

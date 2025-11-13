@@ -17,7 +17,7 @@ cd runalyze-app
 git clone -b dev https://github.com/Gloopzlemeep/Runalyze-Tools.git
 cp Runalyze-Tools/DockerImage/docker-compose.yml docker-compose.yml
 cp Runalyze-Tools/DockerImage/.env.example .env
-docker build Runalyze-Tools/DockerImage/. -t myrunalyze:latest
+docker build Runalyze-Tools/DockerImage/. -t runalyze:latest
  ```
 
 
@@ -32,8 +32,21 @@ Most of the configuration should be done through environment variables in .env
 docker-compose up -d
 ``` 
 
-After you succesfully bringing the stack up, navigate to http://<host>/install to complete the app installation
+After you succesfully bringing the stack up, navigate to http://your-runalyze-host/install to complete the app installation. A permission warning is normal at the moment. It does not prevent installaion.
 
+After installation is complete. Run the following on the container to fix an undiagnosed issue causing activity uploads to fail.
+```
+docker exec runalyze-app-runalyze-1 php /app/runalyze/bin/console cache:clear --env=prod
+docker exec runalyze-app-runalyze-1 php /app/runalyze/bin/console cache:warmup --env=prod
+``` 
+
+## Additional Requirements
+
+Additional steps post installation are listed in the [Runalyze Admin Docs](https://github.com/Runalyze/admin-docs/blob/master/additional-requirements.rst).
+
+Recommended: Add elevation correction by downloading appropriate SRTM file(s) from [dwtkns](http://dwtkns.com/srtm/), then place the *.tif file(s) in VOL_RUNALYZE_DATA_ROOT/srtm
+
+Timezone detection of activity files is already completed by docker.
 
 ## Update
 

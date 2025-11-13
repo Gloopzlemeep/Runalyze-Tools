@@ -141,6 +141,10 @@ RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x8
 # RUN php /app/runalyze/bin/console cache:clear --env=prod && \
 #    php /app/runalyze/bin/console cache:warmup --env=prod
 
+# Provide mod_spatialite to php for timezone detection
+RUN sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/cli/php.ini \
+ && sed -i 's|^;sqlite3\.extension_dir *=.*|;sqlite3.extension_dir = /usr/lib/x86_64-linux-gnu/mod_spatialite.so|' /etc/php/7.4/fpm/php.ini
+
 # Set the entry point to the entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
 
